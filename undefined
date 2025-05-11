@@ -1,0 +1,15 @@
+import HomePage from "@/client/src/pages/HomePage";
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "@/client/src/contexts/AuthContext";
+
+export default function LanguageTutorHomepage() {
+  return (
+    <div className="bg-white min-h-screen">
+      <BrowserRouter>
+        <AuthProvider>
+          <HomePage />
+        </AuthProvider>
+      </BrowserRouter>
+    </div>
+  );
+}
