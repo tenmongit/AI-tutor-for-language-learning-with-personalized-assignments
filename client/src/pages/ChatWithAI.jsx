@@ -12,7 +12,7 @@ export default function ChatWithAI() {
     setMessages([
       {
         role: "ai",
-        content: "¡Hola! I'm your AI language tutor. How can I help you today with your language learning?"
+        content: "¡Hola! I'm your LinguaAI tutor. How can I help you today with your language learning?"
       }
     ]);
   }, []);
@@ -34,32 +34,10 @@ export default function ChatWithAI() {
     setInput("");
     
     try {
-      // In a real implementation, this would call your backend API
-      // For now, we'll simulate a response
-      setTimeout(() => {
-        let aiResponse;
-        
-        // Simple response logic - in a real app this would call an API
-        if (input.toLowerCase().includes('hola') || input.toLowerCase().includes('hi') || input.toLowerCase().includes('hello')) {
-          aiResponse = '¡Hola! ¿En qué puedo ayudarte hoy con tu aprendizaje de idiomas?';
-        } else if (input.toLowerCase().includes('gracias') || input.toLowerCase().includes('thanks')) {
-          aiResponse = '¡De nada! ¿Hay algo más en lo que te pueda ayudar?';
-        } else if (input.includes('?')) {
-          aiResponse = 'Buena pregunta. Permíteme explicarte... (Esta es una respuesta simulada. En una aplicación real, el AI proporcionaría una respuesta detallada.)';
-        } else {
-          aiResponse = 'Entendido. ¿Te gustaría practicar más con este tema o prefieres pasar a algo diferente?';
-        }
-        
-        setMessages(prev => [...prev, { role: "ai", content: aiResponse }]);
-        setLoading(false);
-      }, 1500);
-      
-      // When you implement the actual API:
-      /*
+      // Call the backend API
       const response = await api.post("/chat", { message: input });
       setMessages(prev => [...prev, { role: "ai", content: response.data.reply }]);
       setLoading(false);
-      */
     } catch (error) {
       console.error("Error sending message:", error);
       setMessages(prev => [...prev, { 
@@ -74,7 +52,7 @@ export default function ChatWithAI() {
     <div className="max-w-4xl mx-auto mt-8">
       <div className="bg-white rounded-xl shadow-md p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Chat with AI Tutor</h2>
+          <h2 className="text-2xl font-bold">Chat with LinguaAI</h2>
           <div className="flex space-x-2">
             <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
               <i className="fas fa-microphone"></i>

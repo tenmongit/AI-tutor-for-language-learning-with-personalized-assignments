@@ -13,7 +13,7 @@ function Navbar() {
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center">
               <span className="text-xl font-bold text-blue-600">
-                AI Language Tutor
+                LinguaAI
               </span>
             </Link>
           </div>
@@ -33,6 +33,18 @@ function Navbar() {
                   className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
                 >
                   Dashboard
+                </Link>
+                <Link
+                  to="/new-dashboard"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                >
+                  Enhanced Dashboard
+                </Link>
+                <Link
+                  to="/chat"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                >
+                  Chat with AI
                 </Link>
                 <button
                   onClick={logout}
@@ -116,6 +128,20 @@ function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Dashboard
+              </Link>
+              <Link
+                to="/new-dashboard"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Enhanced Dashboard
+              </Link>
+              <Link
+                to="/chat"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Chat with AI
               </Link>
               <button
                 onClick={() => {

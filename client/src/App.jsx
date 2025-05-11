@@ -4,9 +4,8 @@ import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import DashboardPage from "./pages/DashboardPage";
 import LessonPage from "./pages/LessonPage";
-import Dashboard from "./pages/Dashboard";
+import NewDashboard from "./pages/NewDashboard";
 import ChatWithAI from "./pages/ChatWithAI";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -35,7 +34,7 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <DashboardPage />
+                <NewDashboard />
               </ProtectedRoute>
             }
           />
@@ -44,15 +43,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <LessonPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/new-dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
               </ProtectedRoute>
             }
           />
