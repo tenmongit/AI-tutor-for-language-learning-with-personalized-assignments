@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../services/api";
 
 function ExerciseCard({ exercise, onComplete }) {
+  // Reset state when exercise changes
+  useEffect(() => {
+    setIsCorrect(null);
+    setUserAnswer("");
+    setExplanation("");
+    setShowExplanation(false);
+  }, [exercise.id]);
   const [userAnswer, setUserAnswer] = useState("");
   const [isCorrect, setIsCorrect] = useState(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -11,17 +18,19 @@ function ExerciseCard({ exercise, onComplete }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Safely handle exercise properties
+    const correctAnswer = exercise?.correctAnswer || '';
+    const exerciseId = exercise?.id || null;
+
     // Check if the answer is correct
-    const correct =
-      userAnswer.toLowerCase().trim() ===
-      exercise.correctAnswer.toLowerCase().trim();
+    const correct = userAnswer && correctAnswer
+      ? userAnswer.toLowerCase().trim() === correctAnswer.toLowerCase().trim()
+      : false;
     setIsCorrect(correct);
 
     // If completed, notify parent component
-    if (correct) {
-      onComplete(exercise.id, true);
-    } else {
-      onComplete(exercise.id, false);
+    if (exerciseId) {
+      onComplete(exerciseId, correct);
     }
   };
 
@@ -73,7 +82,8 @@ function ExerciseCard({ exercise, onComplete }) {
 
         {exercise.type === "multiple_choice" && (
           <div className="space-y-2">
-            {exercise.options.map((option, index) => (
+            {console.log('Exercise Options:', exercise.options)}
+            {exercise.options && exercise.options.map((option, index) => (
               <div key={index} className="flex items-center">
                 <input
                   type="radio"
@@ -83,7 +93,7 @@ function ExerciseCard({ exercise, onComplete }) {
                   checked={userAnswer === option}
                   onChange={() => setUserAnswer(option)}
                   className="mr-2"
-                  disabled={isCorrect === true}
+                  // disabled={isCorrect === true}
                 />
                 <label htmlFor={`option-${index}`}>{option}</label>
               </div>

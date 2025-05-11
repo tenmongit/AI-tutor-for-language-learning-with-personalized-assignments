@@ -6,19 +6,22 @@ import { getDatabase } from "../database";
 declare global {
   namespace Express {
     interface Request {
-      user?: any;
+      user?: {
+        id: string;
+        email: string;
+        name: string;
+      };
     }
   }
 }
 
-export const auth = async (req: Request, res: Response, next: NextFunction) => {
+export const auth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     // Get token from header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res
-        .status(401)
-        .json({ message: "No token, authorization denied" });
+      res.status(401).json({ message: "No token, authorization denied" });
+      return;
     }
 
     const token = authHeader.split(" ")[1];
@@ -35,7 +38,8 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     );
 
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      res.status(401).json({ message: "User not found" });
+      return;
     }
 
     // Add user to request object

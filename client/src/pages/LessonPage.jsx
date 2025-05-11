@@ -58,19 +58,7 @@ function LessonPage() {
     } catch (err) {
       console.error("Failed to save progress", err);
     }
-
-    // If correct, move to next exercise after a short delay
-    if (isCorrect) {
-      setTimeout(() => {
-        if (currentExerciseIndex < exercises.length - 1) {
-          setCurrentExerciseIndex(currentExerciseIndex + 1);
-          window.scrollTo(0, 0);
-        } else {
-          // All exercises completed
-          completeLesson();
-        }
-      }, 1500);
-    }
+    // Do not auto-advance to the next exercise
   };
 
   const completeLesson = async () => {
@@ -156,12 +144,38 @@ function LessonPage() {
         <ExerciseCard
           exercise={exercises[currentExerciseIndex]}
           onComplete={handleExerciseComplete}
+          key={exercises[currentExerciseIndex]?.id}
         />
       ) : (
         <p className="text-center text-gray-600">
           No exercises available for this lesson.
         </p>
       )}
+
+      {/* Next button logic */}
+      <div className="mt-4 flex justify-end">
+        {currentExerciseIndex < exercises.length - 1 && (
+          <button
+            onClick={() => {
+              setCurrentExerciseIndex(currentExerciseIndex + 1);
+              window.scrollTo(0, 0);
+            }}
+            className="btn btn-primary"
+            disabled={completedExercises[exercises[currentExerciseIndex]?.id] !== true}
+          >
+            Next
+          </button>
+        )}
+        {currentExerciseIndex === exercises.length - 1 && exercises.length > 0 && (
+          <button
+            onClick={completeLesson}
+            className="btn btn-success"
+            disabled={completedExercises[exercises[currentExerciseIndex]?.id] !== true}
+          >
+            Finish Lesson
+          </button>
+        )}
+      </div>
 
       <div className="mt-8 flex justify-between">
         <button

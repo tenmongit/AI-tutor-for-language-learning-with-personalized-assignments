@@ -8,6 +8,12 @@ const router = express.Router();
 router.get("/", auth, async (req, res) => {
   try {
     const { languageId } = req.query;
+    
+    // Explicit null check for req.user
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     const userId = req.user.id;
 
     if (!languageId) {
@@ -86,6 +92,12 @@ router.get("/", auth, async (req, res) => {
 router.post("/", auth, async (req, res) => {
   try {
     const { lessonId, exerciseId, isCorrect } = req.body;
+    
+    // Explicit null check for req.user
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     const userId = req.user.id;
 
     if (!lessonId || !exerciseId) {

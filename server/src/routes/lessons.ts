@@ -48,6 +48,12 @@ router.get("/:id", async (req, res) => {
 router.post("/:id/complete", auth, async (req, res) => {
   try {
     const { id } = req.params;
+    
+    // Explicit null check for req.user
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     const userId = req.user.id;
 
     const db = await getDatabase();

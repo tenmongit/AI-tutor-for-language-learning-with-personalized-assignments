@@ -1,5 +1,4 @@
-import { Routes, Route, useRoutes } from "react-router-dom";
-import routes from "tempo-routes";
+import { Routes, Route } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
@@ -7,6 +6,8 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import LessonPage from "./pages/LessonPage";
+import Dashboard from "./pages/Dashboard";
+import ChatWithAI from "./pages/ChatWithAI";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -24,8 +25,7 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <main className="container mx-auto px-4 py-8">
-        {/* Tempo routes */}
-        {import.meta.env.VITE_TEMPO && useRoutes(routes)}
+        {/* Routes */}
 
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -48,8 +48,23 @@ function App() {
             }
           />
 
-          {/* Add this before the catchall route */}
-          {import.meta.env.VITE_TEMPO && <Route path="/tempobook/*" />}
+          <Route
+            path="/new-dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoute>
+                <ChatWithAI />
+              </ProtectedRoute>
+            }
+          />
+          {/* End of routes */}
         </Routes>
       </main>
     </div>

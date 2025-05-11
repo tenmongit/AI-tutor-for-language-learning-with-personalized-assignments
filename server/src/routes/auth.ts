@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from 'express';
 import jwt from "jsonwebtoken";
 import { getDatabase, hashPassword, comparePassword } from "../database";
 import { auth } from "../middleware/auth";
@@ -6,7 +6,7 @@ import { auth } from "../middleware/auth";
 const router = express.Router();
 
 // Register a new user
-router.post("/register", async (req, res) => {
+router.post('/register', async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
 
@@ -58,7 +58,7 @@ router.post("/register", async (req, res) => {
 });
 
 // Login user
-router.post("/login", async (req, res) => {
+router.post('/login', async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
@@ -102,10 +102,20 @@ router.post("/login", async (req, res) => {
 });
 
 // Get current user
-router.get("/me", auth, async (req, res) => {
+router.get('/profile', auth, async (req: Request, res: Response) => {
   try {
     res.json(req.user);
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Get user error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Get current user (alternative endpoint for frontend compatibility)
+router.get('/me', auth, async (req: Request, res: Response) => {
+  try {
+    res.json(req.user);
+  } catch (error: any) {
     console.error("Get user error:", error);
     res.status(500).json({ message: "Server error" });
   }
