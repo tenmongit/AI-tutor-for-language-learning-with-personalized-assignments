@@ -1,0 +1,15 @@
+# Python Dependencies (if needed for any AI components)
+# This file is for documentation purposes
+
+# Web Framework
+flask==2.3.3
+gunicorn==21.2.0
+
+# AI/ML Libraries (if used)
+transformers==4.35.2
+torch==2.1.1
+numpy==1.26.0
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.31.0

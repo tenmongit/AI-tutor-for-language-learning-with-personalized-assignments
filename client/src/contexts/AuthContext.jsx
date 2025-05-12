@@ -50,18 +50,46 @@ export function AuthProvider({ children }) {
 
   const register = async (name, email, password) => {
     try {
+      console.log("Attempting to register with:", { name, email });
+      
+      // Ensure API base URL is correctly set
+      console.log("API base URL:", api.defaults.baseURL);
+      
       const response = await api.post("/auth/register", {
         name,
         email,
         password,
       });
+      
+      console.log("Registration response:", response.data);
+      
       const { token, user } = response.data;
       localStorage.setItem("token", token);
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setCurrentUser(user);
       return user;
     } catch (error) {
-      throw error.response?.data?.message || "Failed to register";
+      console.error("Registration error details:", error);
+      
+      // Provide more detailed error information
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Server response error:", {
+          data: error.response.data,
+          status: error.response.status,
+          headers: error.response.headers,
+        });
+        throw error.response.data?.message || `Server error: ${error.response.status}`;
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received:", error.request);
+        throw "No response from server. Please check your internet connection and try again.";
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Request setup error:", error.message);
+        throw error.message || "Failed to register";
+      }
     }
   };
 

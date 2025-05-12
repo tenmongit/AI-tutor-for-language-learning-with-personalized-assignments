@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext";
-import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -22,10 +21,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <main className="container mx-auto px-4 py-8">
-        {/* Routes */}
-
+      {/* Routes */}
+      <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -54,7 +51,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* End of routes */}
         </Routes>
       </main>
     </div>

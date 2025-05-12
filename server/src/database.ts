@@ -28,10 +28,13 @@ export async function getDatabase() {
 }
 
 export async function initializeDatabase() {
-  const db = await getDatabase();
+  try {
+    console.log("Initializing database...");
+    const db = await getDatabase();
 
-  // Create tables
-  await db.exec(`
+    // Create tables with better error handling
+    console.log("Creating users table...");
+    await db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -178,11 +181,17 @@ export async function initializeDatabase() {
   }
 
   console.log("Database initialized successfully");
+  } catch (error) {
+    console.error("Database initialization error:", error);
+    throw error;
+  }
 }
 
 // Helper function to hash passwords
 export async function hashPassword(password: string): Promise<string> {
-  const salt = await bcrypt.genSalt(10);
+  // Using a numeric salt rounds value (10) for bcrypt
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
   return bcrypt.hash(password, salt);
 }
 

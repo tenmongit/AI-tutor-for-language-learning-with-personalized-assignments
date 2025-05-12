@@ -14,9 +14,22 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
-    port: 3000,
+    port: 3002, // Update to match the current running port
     // @ts-ignore
     allowedHosts: process.env.TEMPO === "true" ? true : undefined,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+      },
+      '/health': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+      }
+    },
   },
   build: {
     outDir: "dist",
