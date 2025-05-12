@@ -19,6 +19,7 @@ export default function NewDashboard() {
   const [error, setError] = useState(null);
   const [areasToImprove, setAreasToImprove] = useState([]);
   const [assignments, setAssignments] = useState([]);
+  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
 
   useEffect(() => {
     // Load user's last selected language from localStorage
@@ -172,29 +173,65 @@ export default function NewDashboard() {
             <h1 className="text-2xl font-bold">LinguaAI</h1>
           </div>
           <div className="flex items-center space-x-4">
-            {selectedLanguage ? (
-              <div className="relative language-selector">
-                <button className="flex items-center space-x-2 bg-white bg-opacity-20 px-4 py-2 rounded-full">
-                  <span>{selectedLanguage.flag} {selectedLanguage.name || user?.language || "Spanish"}</span>
-                  <i className="fas fa-chevron-down text-xs"></i>
-                </button>
-                <button
-                  onClick={() => setSelectedLanguage(null)}
-                  className="ml-2 px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm"
-                >
-                  Change
-                </button>
-              </div>
-            ) : (
-              <div className="relative language-selector">
-                <button className="flex items-center space-x-2 bg-white bg-opacity-20 px-4 py-2 rounded-full">
-                  <span>{user?.language || "Spanish"}</span>
-                  <i className="fas fa-chevron-down text-xs"></i>
-                </button>
-              </div>
-            )}
+            {/* Improved language selector */}
+            <div className="relative language-selector">
+              <button 
+                onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
+                className="flex items-center space-x-2 bg-white bg-opacity-20 px-4 py-2 rounded-full hover:bg-opacity-30 transition-all"
+              >
+                <span className="mr-1">{selectedLanguage ? selectedLanguage.flag : "🌐"}</span>
+                <span>{selectedLanguage ? (selectedLanguage.name || user?.language) : "Select Language"}</span>
+                <i className="fas fa-chevron-down text-xs ml-1"></i>
+              </button>
+              
+              {/* Language dropdown menu */}
+              {isLanguageMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1 animate-fadeIn">
+                  <div className="py-1">
+                    <button 
+                      onClick={() => {
+                        handleLanguageSelect({ id: 1, name: "Spanish", flag: "🇪🇸" });
+                        setIsLanguageMenuOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-indigo-100"
+                    >
+                      🇪🇸 Spanish
+                    </button>
+                    <button 
+                      onClick={() => {
+                        handleLanguageSelect({ id: 2, name: "French", flag: "🇫🇷" });
+                        setIsLanguageMenuOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-indigo-100"
+                    >
+                      🇫🇷 French
+                    </button>
+                    <button 
+                      onClick={() => {
+                        handleLanguageSelect({ id: 3, name: "German", flag: "🇩🇪" });
+                        setIsLanguageMenuOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-indigo-100"
+                    >
+                      🇩🇪 German
+                    </button>
+                    <button 
+                      onClick={() => {
+                        handleLanguageSelect({ id: 4, name: "Japanese", flag: "🇯🇵" });
+                        setIsLanguageMenuOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-indigo-100"
+                    >
+                      🇯🇵 Japanese
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* User profile button with proper icon */}
             <div className="relative">
-              <button className="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+              <button className="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center hover:bg-opacity-30 transition-all">
                 <i className="fas fa-user"></i>
               </button>
             </div>
@@ -279,22 +316,30 @@ export default function NewDashboard() {
               <div className="space-y-3">
                 <button 
                   onClick={() => navigate("/lessons")}
-                  className="w-full flex items-center space-x-3 px-4 py-3 bg-indigo-50 text-indigo-700 rounded-lg"
+                  className="w-full flex items-center space-x-3 px-4 py-3 bg-indigo-50 text-indigo-700 rounded-lg hover:shadow-md transition-all duration-300 hover:bg-indigo-100"
                 >
-                  <i className="fas fa-book-open"></i>
-                  <span>Continue Learning</span>
+                  <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                    <i className="fas fa-book-open text-lg"></i>
+                  </div>
+                  <span className="font-medium">Continue Learning</span>
                 </button>
-                <button className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
-                  <i className="fas fa-microphone"></i>
-                  <span>Speaking Practice</span>
+                <button className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 rounded-lg hover:shadow-md transition-all duration-300">
+                  <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+                    <i className="fas fa-microphone text-lg"></i>
+                  </div>
+                  <span className="font-medium">Speaking Practice</span>
                 </button>
-                <button className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
-                  <i className="fas fa-pen"></i>
-                  <span>Writing Exercises</span>
+                <button className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 rounded-lg hover:shadow-md transition-all duration-300">
+                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                    <i className="fas fa-pen text-lg"></i>
+                  </div>
+                  <span className="font-medium">Writing Exercises</span>
                 </button>
-                <Link to="/chat" className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
-                  <i className="fas fa-comment"></i>
-                  <span>Chat with LinguaAI</span>
+                <Link to="/chat" className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 rounded-lg hover:shadow-md transition-all duration-300">
+                  <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                    <i className="fas fa-robot text-lg"></i>
+                  </div>
+                  <span className="font-medium">Chat with LinguaAI</span>
                 </Link>
               </div>
             </div>
@@ -492,10 +537,20 @@ export default function NewDashboard() {
         )}
       </main>
       
-      {/* Floating Action Button */}
+      {/* Floating Action Button - Chat with AI */}
       <div className="fixed bottom-8 right-8">
-        <Link to="/chat" className="floating-button w-14 h-14 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xl hover:bg-indigo-700 shadow-lg">
-          <i className="fas fa-comment"></i>
+        <Link 
+          to="/chat" 
+          className="floating-button w-16 h-16 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xl hover:bg-indigo-700 shadow-lg transition-all duration-300 hover:scale-110 group"
+          title="Chat with LinguaAI"
+        >
+          <div className="relative">
+            <i className="fas fa-robot text-2xl"></i>
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full"></span>
+          </div>
+          <span className="absolute -top-10 bg-white text-indigo-700 px-3 py-1 rounded-lg text-sm font-medium shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+            Chat with LinguaAI
+          </span>
         </Link>
       </div>
     </div>
