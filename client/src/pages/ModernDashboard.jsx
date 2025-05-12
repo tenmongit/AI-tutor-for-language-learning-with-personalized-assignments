@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import api from "../services/api";
-import ProgressChart from "../components/ProgressChart";
-import ProgressBar from "../components/ProgressBar";
 import LanguageSelector from "../components/LanguageSelector";
 
 export default function ModernDashboard() {
@@ -13,16 +11,14 @@ export default function ModernDashboard() {
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [progressData, setProgressData] = useState([]);
-  const [dailyGoal, setDailyGoal] = useState(70); // Percentage of daily goal completed
+  const [dailyGoal, setDailyGoal] = useState(70);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
-  const [userProgress, setUserProgress] = useState(null);
-  const [error, setError] = useState(null);
-  const [areasToImprove, setAreasToImprove] = useState([]);
-  const [assignments, setAssignments] = useState([]);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
+  const [assignments, setAssignments] = useState([]);
+  const [areasToImprove, setAreasToImprove] = useState([]);
 
+  // Load saved language on mount
   useEffect(() => {
-    // Load user's last selected language from localStorage
     const savedLanguage = localStorage.getItem("selectedLanguage");
     if (savedLanguage) {
       try {
@@ -33,35 +29,21 @@ export default function ModernDashboard() {
     }
   }, []);
 
+  // Fetch user data and mock data
   useEffect(() => {
-    // Fetch user data
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       try {
-        // Use currentUser if available, otherwise use mock data
-        if (currentUser) {
-          setUser({
-            name: currentUser.name,
-            proficiency: "Intermediate",
-            language: selectedLanguage?.name || "Spanish",
-            progress: 65,
-            lessonsCompleted: 28,
-            streak: 14,
-            level: "A2"
-          });
-        } else {
-          // Mock data for testing
-          setUser({
-            name: "Test User",
-            proficiency: "Intermediate",
-            language: selectedLanguage?.name || "Spanish",
-            progress: 65,
-            lessonsCompleted: 28,
-            streak: 14,
-            level: "A2"
-          });
-        }
+        // Mock user data
+        setUser({
+          name: currentUser?.name || "Test User",
+          language: selectedLanguage?.name || "Spanish",
+          progress: 65,
+          lessonsCompleted: 28,
+          streak: 14,
+          level: "A2"
+        });
 
-        // Mock progress data for chart
+        // Mock progress data
         setProgressData([
           { name: "Greetings", value: 80 },
           { name: "Grammar", value: 60 },
@@ -70,86 +52,38 @@ export default function ModernDashboard() {
           { name: "Speaking", value: 75 }
         ]);
 
+        // Mock lessons
+        setLessons([
+          { id: 1, title: "Greetings and Introductions", difficulty: "BEGINNER", description: "Learn basic Spanish greetings and how to introduce yourself.", completed: true },
+          { id: 2, title: "Numbers and Counting", difficulty: "BEGINNER", description: "Learn to count and use numbers in Spanish.", completed: true },
+          { id: 3, title: "Common Phrases", difficulty: "BEGINNER", description: "Essential phrases for everyday conversations.", completed: false }
+        ]);
+
+        // Mock assignments
+        setAssignments([
+          { id: 1, title: "Past Tense Practice", difficulty: "MEDIUM", dueDate: "2025-05-15", description: "Complete exercises on past tense verbs" },
+          { id: 2, title: "Conversation Practice", difficulty: "EASY", dueDate: "2025-05-14", description: "Record yourself speaking for 5 minutes" }
+        ]);
+
         // Mock areas to improve
         setAreasToImprove([
           { id: 1, name: "Verb Conjugation", description: "Practice regular and irregular verb forms" },
-          { id: 2, name: "Listening Comprehension", description: "Work on understanding native speakers" },
-          { id: 3, name: "Vocabulary Expansion", description: "Learn more words related to daily activities" }
+          { id: 2, name: "Listening Comprehension", description: "Work on understanding native speakers" }
         ]);
 
         setLoading(false);
       } catch (err) {
-        setError("Failed to fetch user data");
+        console.error("Error fetching data:", err);
         setLoading(false);
       }
     };
-    
-    fetchUserData();
+
+    fetchData();
   }, [currentUser, selectedLanguage]);
-
-  useEffect(() => {
-    // Fetch lessons
-    const fetchLessons = async () => {
-      try {
-        // Mock lessons data
-        const mockLessons = [
-          { id: 1, title: "Greetings and Introductions", difficulty: "BEGINNER", description: "Learn basic Spanish greetings and how to introduce yourself.", completed: true },
-          { id: 2, title: "Numbers and Counting", difficulty: "BEGINNER", description: "Learn to count and use numbers in Spanish.", completed: true },
-          { id: 3, title: "Common Phrases", difficulty: "BEGINNER", description: "Essential phrases for everyday conversations.", completed: false },
-          { id: 4, title: "Food and Dining", difficulty: "INTERMEDIATE", description: "Vocabulary for restaurants and food items.", completed: false },
-          { id: 5, title: "Travel Expressions", difficulty: "INTERMEDIATE", description: "Useful phrases for traveling in Spanish-speaking countries.", completed: false },
-          { id: 6, title: "Past Tense Basics", difficulty: "INTERMEDIATE", description: "Learn to talk about past events.", completed: false }
-        ];
-        
-        setLessons(mockLessons);
-      } catch (err) {
-        setError("Failed to fetch lessons");
-      }
-    };
-    
-    fetchLessons();
-  }, [selectedLanguage]);
-
-  useEffect(() => {
-    // Fetch user progress
-    const fetchUserProgress = async () => {
-      try {
-        // Mock assignments data
-        setAssignments([
-          { id: 1, title: "Past Tense Practice", difficulty: "MEDIUM", dueDate: "2025-05-15", description: "Complete exercises on past tense verbs" },
-          { id: 2, title: "Conversation Practice", difficulty: "EASY", dueDate: "2025-05-14", description: "Record yourself speaking for 5 minutes" },
-          { id: 3, title: "Reading Comprehension", difficulty: "HARD", dueDate: "2025-05-16", description: "Read a short story and answer questions" }
-        ]);
-      } catch (err) {
-        setError("Failed to fetch user progress");
-      }
-    };
-    
-    fetchUserProgress();
-  }, [selectedLanguage]);
 
   const handleLanguageSelect = (language) => {
     setSelectedLanguage(language);
     localStorage.setItem("selectedLanguage", JSON.stringify(language));
-  };
-
-  const getLessonStatus = (lessonId) => {
-    const lesson = lessons.find(l => l.id === lessonId);
-    
-    if (!lesson) return { status: "UNAVAILABLE", action: "Unavailable" };
-    
-    if (lesson.completed) {
-      return { status: "COMPLETED", action: "Review" };
-    }
-    
-    // Check if previous lessons are completed to determine if this one is available
-    const previousLessonsCompleted = lessons
-      .filter(l => l.id < lessonId)
-      .every(l => l.completed);
-    
-    return previousLessonsCompleted 
-      ? { status: "AVAILABLE", action: "Start" } 
-      : { status: "LOCKED", action: "Locked" };
   };
 
   if (loading) {
@@ -162,7 +96,7 @@ export default function ModernDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Modern Header - Similar to Image 3 */}
+      {/* Header */}
       <header className="bg-white border-b border-gray-200 py-3 px-4 shadow-sm">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center">
@@ -180,8 +114,8 @@ export default function ModernDashboard() {
             <Link to="/dashboard" className="text-gray-600 hover:text-indigo-600 transition-colors duration-200">Dashboard</Link>
             <Link to="/chat" className="text-gray-600 hover:text-indigo-600 transition-colors duration-200">Chat with AI</Link>
             
-            {/* Improved language selector */}
-            <div className="relative language-selector">
+            {/* Language selector */}
+            <div className="relative">
               <button 
                 onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
                 className="flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
@@ -193,9 +127,8 @@ export default function ModernDashboard() {
                 </svg>
               </button>
               
-              {/* Language dropdown menu */}
               {isLanguageMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1 animate-fadeIn border border-gray-200">
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1 border border-gray-200">
                   <div className="py-1">
                     <button 
                       onClick={() => {
@@ -224,21 +157,12 @@ export default function ModernDashboard() {
                     >
                       🇩🇪 German
                     </button>
-                    <button 
-                      onClick={() => {
-                        handleLanguageSelect({ id: 4, name: "Japanese", flag: "🇯🇵" });
-                        setIsLanguageMenuOpen(false);
-                      }}
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
-                    >
-                      🇯🇵 Japanese
-                    </button>
                   </div>
                 </div>
               )}
             </div>
             
-            {/* User profile button with proper icon */}
+            {/* User profile */}
             <div className="relative">
               <button className="flex items-center text-gray-600 hover:text-indigo-600 transition-colors duration-200">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -251,7 +175,7 @@ export default function ModernDashboard() {
         </div>
       </header>
       
-      {/* Language banner - similar to Image 2 */}
+      {/* Language banner */}
       {selectedLanguage && (
         <div className="bg-indigo-600 text-white py-3 px-4">
           <div className="container mx-auto flex justify-between items-center">
@@ -271,7 +195,6 @@ export default function ModernDashboard() {
 
       {/* Main content */}
       <main className="container mx-auto px-4 py-8">
-        {/* If no language is selected, show language selector prominently */}
         {!selectedLanguage ? (
           <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
@@ -284,7 +207,7 @@ export default function ModernDashboard() {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar */}
             <aside className="lg:w-1/4 space-y-6">
-              {/* User Profile - Similar to Image 2 */}
+              {/* User Profile */}
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xl font-medium">
@@ -299,12 +222,11 @@ export default function ModernDashboard() {
                           <span>{selectedLanguage.name}</span>
                         </>
                       )}
-                      {userProgress?.level && (
+                      {user?.level && (
                         <span className="ml-1">
-                          {selectedLanguage ? " - " : ""}{userProgress.level || "A2"}
+                          {selectedLanguage ? " - " : ""}{user.level}
                         </span>
                       )}
-                      {!selectedLanguage && "Select a language"}
                     </p>
                   </div>
                 </div>
@@ -338,7 +260,7 @@ export default function ModernDashboard() {
                 </div>
               </div>
               
-              {/* Quick Actions - with proper icons */}
+              {/* Quick Actions */}
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h3 className="font-bold text-lg mb-4">Quick Actions</h3>
                 <div className="space-y-3">
@@ -492,41 +414,6 @@ export default function ModernDashboard() {
                 </div>
               </div>
               
-              {/* Personalized Assignments */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold">Your Personalized Assignments</h2>
-                  <button className="text-indigo-600 hover:text-indigo-800">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd"></path>
-                    </svg>
-                  </button>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {assignments.map((assignment) => (
-                    <div key={assignment.id} className="border border-gray-200 rounded-lg overflow-hidden">
-                      <div className="p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <span className={`inline-block px-2 py-1 text-xs font-medium rounded ${assignment.difficulty === 'EASY' ? 'bg-green-100 text-green-800' : assignment.difficulty === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
-                            {assignment.difficulty}
-                          </span>
-                          <span className="text-sm font-medium text-gray-500">
-                            Due: {new Date(assignment.dueDate).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <h3 className="font-medium text-lg mb-1">{assignment.title}</h3>
-                        <p className="text-gray-600 text-sm mb-4">{assignment.description}</p>
-                        
-                        <button className="w-full px-4 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors text-sm">
-                          Start
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
               {/* Areas to Improve */}
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h2 className="text-2xl font-bold mb-6">Areas to Improve</h2>
@@ -570,3 +457,4 @@ export default function ModernDashboard() {
       </div>
     </div>
   );
+}
