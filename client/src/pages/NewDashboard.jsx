@@ -202,8 +202,10 @@ export default function NewDashboard() {
         </div>
       </header>
 
-      {!selectedLanguage ? (
-        <main className="container mx-auto px-4 py-8">
+      {/* Main content - always shown */}
+      <main className="container mx-auto px-4 py-8">
+        {/* If no language is selected, show language selector prominently */}
+        {!selectedLanguage ? (
           <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
@@ -213,18 +215,20 @@ export default function NewDashboard() {
                   Welcome, {currentUser.name || user?.name || "User"}!
                 </h2>
                 <p className="text-gray-600">
-                  Continue your language learning journey or start a new one.
+                  Please select a language to continue your learning journey.
                 </p>
               </div>
             )}
 
-            <LanguageSelector onLanguageSelect={handleLanguageSelect} />
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-semibold mb-4">Select a Language</h2>
+              <LanguageSelector onLanguageSelect={handleLanguageSelect} />
+            </div>
           </div>
-        </main>
-      ) : (
-        <main className="container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
-          <aside className="lg:w-1/4 space-y-6">
+        ) : (
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Sidebar */}
+            <aside className="lg:w-1/4 space-y-6">
             {/* User Profile */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <div className="flex items-center space-x-4">
@@ -347,8 +351,68 @@ export default function NewDashboard() {
               </div>
             </div>
             
-            {/* Personalized Assignments */}
+            {/* Original Lessons */}
             <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">Available Lessons</h2>
+                <button className="text-indigo-600 hover:text-indigo-800">
+                  <i className="fas fa-sync-alt"></i> Refresh
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {lessons.map((lesson, index) => (
+                  <div 
+                    key={lesson.id || index}
+                    onClick={() => navigate(`/lesson/${lesson.id}`)}
+                    className="lesson-card bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6 transition-all duration-300 cursor-pointer hover:shadow-md"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold">
+                        {lesson.level?.toUpperCase() || "BEGINNER"}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {getLessonStatus(lesson.id) === "completed" ? "Completed" : 
+                         getLessonStatus(lesson.id) === "in-progress" ? "In Progress" : "Available"}
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-lg mb-3">{lesson.title}</h3>
+                    <p className="text-gray-600 text-sm mb-4">{lesson.description}</p>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center">
+                        <span
+                          className={`inline-block w-3 h-3 rounded-full mr-2 ${getLessonStatus(lesson.id) === "completed" ? "bg-green-500" : getLessonStatus(lesson.id) === "in-progress" ? "bg-yellow-500" : "bg-gray-300"}`}
+                        ></span>
+                        <span className="text-sm text-gray-600">
+                          {getLessonStatus(lesson.id) === "completed"
+                            ? "Completed"
+                            : getLessonStatus(lesson.id) === "in-progress"
+                              ? "In Progress"
+                              : "Available"}
+                        </span>
+                      </div>
+                      <button className="bg-indigo-600 text-white px-4 py-1 rounded-full text-sm hover:bg-indigo-700">
+                        {getLessonStatus(lesson.id) === "completed"
+                          ? "Review"
+                          : getLessonStatus(lesson.id) === "in-progress"
+                            ? "Continue"
+                            : "Start"}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                
+                {/* If no lessons are available */}
+                {lessons.length === 0 && (
+                  <div className="col-span-3 text-center py-8">
+                    <p className="text-gray-500">No lessons available for this language yet.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Personalized Assignments */}
+            <div className="bg-white rounded-xl shadow-md p-6 mt-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">Your Personalized Assignments</h2>
                 <button className="text-indigo-600 hover:text-indigo-800">
@@ -424,8 +488,9 @@ export default function NewDashboard() {
               </div>
             </div>
           </div>
-        </main>
-      )}
+          </div>
+        )}
+      </main>
       
       {/* Floating Action Button */}
       <div className="fixed bottom-8 right-8">
