@@ -5,7 +5,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import LessonPage from "./pages/LessonPage";
-import NewDashboard from "./pages/NewDashboard";
+import ModernDashboard from "./pages/ModernDashboard";
 import ChatWithAI from "./pages/ChatWithAI";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -34,7 +34,7 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <NewDashboard />
+                <ModernDashboard />
               </ProtectedRoute>
             }
           />
